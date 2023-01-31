@@ -5,9 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.viewModels
 import com.example.avenuecrm.R
+import com.example.avenuecrm.viewModels.SplashScreenViewModel
 
 class SplashScreenActivity : AppCompatActivity() {
+
+    private val viewModel: SplashScreenViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)

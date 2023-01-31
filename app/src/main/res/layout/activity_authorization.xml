@@ -97,7 +97,6 @@
         android:layout_width="0dp"
         android:elevation="13dp"
         android:layout_height="60dp"
-        android:background="@drawable/shadow"
         android:text="LOGIN"
         app:layout_constraintWidth_percent=".60"
         android:id="@+id/loginButton"

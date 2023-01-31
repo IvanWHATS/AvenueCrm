@@ -1,5 +1,6 @@
 package com.example.avenuecrm.views.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -23,6 +24,7 @@ class AuthorizationActivity : AppCompatActivity() {
     lateinit var passwordEditText: EditText
     lateinit var loginButton: Button
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authorization)
@@ -32,7 +34,11 @@ class AuthorizationActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
 
         loginButton.setOnClickListener{
-            //it.background = AppCompatResources.getDrawable(this, R.color.primary_active)
+            if (viewModel.authorize(loginEditText.text.toString(), passwordEditText.text.toString())){
+                startActivity(Intent(this, MainMenuActivity::class.java))
+            } else {
+                Toast.makeText(this, "Ошибка", Toast.LENGTH_LONG).show()
+            }
         }
 
 
@@ -62,11 +68,11 @@ class AuthorizationActivity : AppCompatActivity() {
             }
         })
 
-        /*lifecycleScope.launch {
+        lifecycleScope.launch {
             viewModel.loginButtonIsEnabled.collect{
                 loginButton.isEnabled = it
             }
-        }*/
+        }
 
     }
 }
