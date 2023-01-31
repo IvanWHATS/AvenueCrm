@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".views.activities.AuthorizationActivity"
     android:background="@color/background">
 
     <ImageView
@@ -23,7 +23,7 @@
         app:boxStrokeWidth="2dp"
         app:boxStrokeColor="@color/white"
         android:hint="@string/login"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/secondary"
         app:hintTextColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,6 @@
             android:layout_height="60dp"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
-
             android:textColor="@color/white"
             android:textSize="24sp"
             android:inputType="text"
@@ -54,9 +53,8 @@
         app:boxStrokeWidth="2dp"
         app:boxStrokeColor="@color/white"
         android:hint="@string/Password"
-        android:textColorHint="@color/white"
+        android:textColorHint="@color/secondary"
         app:hintTextColor="@color/white"
-
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white"
 
@@ -77,19 +75,35 @@
 
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:inputType="textPassword"
-            />
+            android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <CheckBox
+        android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/filled_btn_background"
+        android:layout_marginTop="12dp"
+        android:text="Remember me"
+
+        android:textColor="@color/white"
+        android:textColorHint="@color/background"
+        android:textSize="16sp"
+
+        app:layout_constraintStart_toStartOf="@+id/passwordTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="0dp"
+        android:elevation="13dp"
+        android:layout_height="60dp"
+        android:background="@drawable/shadow"
         android:text="LOGIN"
-        android:id="@+id/btn"
-        android:layout_marginTop="50dp"
+        app:layout_constraintWidth_percent=".60"
+        android:id="@+id/loginButton"
+        android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
