@@ -13,12 +13,12 @@
         android:theme="@style/Theme.AvenueCrm"
         tools:targetApi="31">
         <activity
-            android:name=".MainMenuActivity"
-            android:exported="false" />
+            android:name=".views.activities.MainMenuActivity"
+            android:exported="true" />
         <activity
             android:name=".views.activities.SplashScreenActivity"
             android:exported="true"
-            android:theme="@style/Theme.AvenueCrm.NoActionBarAndStatusBar">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,8 +27,7 @@
         </activity>
         <activity
             android:name=".views.activities.AuthorizationActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AvenueCrm.NoActionBarAndStatusBar" />
+            android:exported="true"/>
     </application>
 
 </manifest>

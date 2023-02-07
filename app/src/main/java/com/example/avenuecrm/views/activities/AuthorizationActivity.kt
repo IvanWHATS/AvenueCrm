@@ -9,20 +9,18 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.lifecycleScope
 import com.example.avenuecrm.R
 import com.example.avenuecrm.viewModels.AuthorizationViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class AuthorizationActivity : AppCompatActivity() {
 
     val viewModel: AuthorizationViewModel by viewModels()
 
-    lateinit var loginEditText: EditText
-    lateinit var passwordEditText: EditText
-    lateinit var loginButton: Button
+    private lateinit var loginEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var loginButton: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,14 +32,27 @@ class AuthorizationActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.loginButton)
 
         loginButton.setOnClickListener{
-            if (viewModel.authorize(loginEditText.text.toString(), passwordEditText.text.toString())){
-                startActivity(Intent(this, MainMenuActivity::class.java))
-            } else {
-                Toast.makeText(this, "Ошибка", Toast.LENGTH_LONG).show()
-            }
+            viewModel.authorize(loginEditText.text.toString(), passwordEditText.text.toString())
         }
 
-
+        lifecycleScope.launch{
+            viewModel.authorizationAnswer.collect{
+                if (it != null){
+                    if (it.error == null) {
+                        Toast.makeText(this@AuthorizationActivity, "Ошибка", Toast.LENGTH_SHORT).show()
+                    } else {
+                        if (it.error == 1) {
+                            Toast.makeText(this@AuthorizationActivity, it.error_msg, Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@AuthorizationActivity, it.key, Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@AuthorizationActivity, MainMenuActivity::class.java))
+                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                            finish()
+                        }
+                    }
+                }
+            }
+        }
 
         loginEditText.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -55,6 +66,7 @@ class AuthorizationActivity : AppCompatActivity() {
                 }
             }
         })
+
         passwordEditText.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
