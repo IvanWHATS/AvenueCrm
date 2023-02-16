@@ -13,14 +13,39 @@ class MainMenuViewModel: ViewModel() {
 
     private val repository: AvenueRepository = AvenueRetrofitRepository
 
-    private val _menuItems = MutableStateFlow<List<Module>>(listOf())
+    private val modulesTree: MutableList<List<Module>> = mutableListOf()
 
-    var menuItems = _menuItems.asStateFlow()
+    var currentTreeLevel: Int = 0
+        private set
+
+    private val _currentMenuItems = MutableStateFlow<List<Module>>(listOf())
+
+    var currentMenuItems = _currentMenuItems.asStateFlow()
 
 
     fun loadMenuItems(){
         viewModelScope.launch {
-            repository.getTreeModule()?.let { _menuItems.emit(it) }
+            repository.getTreeModule()?.let {
+                if (it.isNotEmpty()) modulesTree.add(it)
+                _currentMenuItems.emit(it)
+            }
+        }
+    }
+
+    fun loadMenuItems(modules: List<Module>){
+        currentTreeLevel++
+        modulesTree.add(modules)
+        viewModelScope.launch {
+            _currentMenuItems.emit(modules)
+        }
+    }
+
+    fun menuGoBack(){
+        if (currentTreeLevel > 0){
+            modulesTree.removeAt(currentTreeLevel--)
+            viewModelScope.launch{
+                _currentMenuItems.emit(modulesTree[currentTreeLevel])
+            }
         }
     }
 
