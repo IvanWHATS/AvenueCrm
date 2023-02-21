@@ -1,4 +1,4 @@
-package com.example.avenuecrm.models
+package com.example.avenuecrm.data.models
 
 data class Module (
     val name: String? = null,

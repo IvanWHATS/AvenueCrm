@@ -1,6 +1,6 @@
-package com.example.avenuecrm.retrofit.dtos
+package com.example.avenuecrm.data.retrofit.dtos
 
-import com.example.avenuecrm.models.Module
+import com.example.avenuecrm.data.models.Module
 
 data class ModuleDTO (
     val name: String? = null,

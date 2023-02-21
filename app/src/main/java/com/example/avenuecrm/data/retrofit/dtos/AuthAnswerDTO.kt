@@ -1,6 +1,6 @@
-package com.example.avenuecrm.models
+package com.example.avenuecrm.data.retrofit.dtos
 
-data class AuthAnswer (
+data class AuthAnswerDTO (
     val error: Int? = null,
     val error_msg: String? = null,
     val key: String? = null

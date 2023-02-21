@@ -1,9 +1,9 @@
-package com.example.avenuecrm.retrofit
+package com.example.avenuecrm.data.retrofit
 
-import com.example.avenuecrm.models.AuthAnswer
-import com.example.avenuecrm.models.Module
-import com.example.avenuecrm.models.UserInformation
-import com.example.avenuecrm.retrofit.dtos.ModuleDTO
+import com.example.avenuecrm.data.models.AuthAnswer
+import com.example.avenuecrm.data.models.Module
+import com.example.avenuecrm.data.models.UserInformation
+import com.example.avenuecrm.data.retrofit.dtos.ModuleDTO
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,8 +21,8 @@ object AvenueRetrofitRepository: AvenueRepository {
     private var userKey: String? = null
 
 
-    override suspend fun authorize(login: String, password: String): AuthAnswer =
-        service.authorize(UserInformation(login, password)).run {
+    override suspend fun authorize(userInformation: UserInformation): AuthAnswer =
+        service.authorize(userInformation).run {
             userKey = key
             AuthAnswer(
                 error = error,
@@ -32,7 +32,7 @@ object AvenueRetrofitRepository: AvenueRepository {
         }
 
     override suspend fun getTreeModule(): List<Module>? =
-        userKey?.let {service.getTreeModule(it)}?.map {
+        userKey?.let { service.getTreeModule(it)}?.map {
             Module(
                 name = it.name,
                 link = it.link,

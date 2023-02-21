@@ -2,14 +2,20 @@ package com.example.avenuecrm.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.avenuecrm.models.Module
-import com.example.avenuecrm.retrofit.AvenueRepository
-import com.example.avenuecrm.retrofit.AvenueRetrofitRepository
+import com.example.avenuecrm.data.models.Module
+import com.example.avenuecrm.data.preferences.abstraction.DataStoreRepository
+import com.example.avenuecrm.data.retrofit.AvenueRepository
+import com.example.avenuecrm.data.retrofit.AvenueRetrofitRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainMenuViewModel: ViewModel() {
+@HiltViewModel
+class MainMenuViewModel @Inject constructor(
+    private val dataStoreRepository: DataStoreRepository
+): ViewModel() {
 
     private val repository: AvenueRepository = AvenueRetrofitRepository
 
@@ -22,6 +28,12 @@ class MainMenuViewModel: ViewModel() {
 
     var currentMenuItems = _currentMenuItems.asStateFlow()
 
+
+    fun logOut(){
+        viewModelScope.launch {
+            dataStoreRepository.clearUserInformation()
+        }
+    }
 
     fun loadMenuItems(){
         viewModelScope.launch {
