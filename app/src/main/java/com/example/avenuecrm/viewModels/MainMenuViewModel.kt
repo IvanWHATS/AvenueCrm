@@ -3,6 +3,7 @@ package com.example.avenuecrm.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.avenuecrm.data.models.Module
+import com.example.avenuecrm.data.models.UserInformation
 import com.example.avenuecrm.data.preferences.abstraction.DataStoreRepository
 import com.example.avenuecrm.data.retrofit.AvenueRepository
 import com.example.avenuecrm.data.retrofit.AvenueRetrofitRepository
@@ -24,6 +25,11 @@ class MainMenuViewModel @Inject constructor(
     var currentTreeLevel: Int = 0
         private set
 
+
+    private val _userInformation = MutableStateFlow(UserInformation())
+
+    var userInformation = _userInformation.asStateFlow()
+
     private val _currentMenuItems = MutableStateFlow<List<Module>>(listOf())
 
     var currentMenuItems = _currentMenuItems.asStateFlow()
@@ -31,7 +37,15 @@ class MainMenuViewModel @Inject constructor(
 
     fun logOut(){
         viewModelScope.launch {
-            dataStoreRepository.clearUserInformation()
+            dataStoreRepository.clearCredentials()
+        }
+    }
+
+    fun loadUserInformation(){
+        viewModelScope.launch {
+            repository.getUserInformation()?.let {
+                _userInformation.emit(it)
+            }
         }
     }
 

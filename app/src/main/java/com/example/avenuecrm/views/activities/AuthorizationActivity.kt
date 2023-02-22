@@ -53,7 +53,7 @@ class AuthorizationActivity : AppCompatActivity() {
                         Toast.makeText(this@AuthorizationActivity, "Ошибка", Toast.LENGTH_SHORT).show()
                     } else {
                         if (it.error == 1) {
-                            Toast.makeText(this@AuthorizationActivity, it.error_msg, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@AuthorizationActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
                         } else {
                             if (rememberMeCheckBox.isChecked)
                                 viewModel.saveUser(loginEditText.text.toString(), passwordEditText.text.toString())

@@ -1,4 +1,4 @@
-package com.example.avenuecrm
+package com.example.avenuecrm.data.encryption
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties

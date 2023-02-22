@@ -1,26 +1,26 @@
-package com.example.avenuecrm
+package com.example.avenuecrm.data.serializers
 
 import androidx.datastore.core.Serializer
-import com.example.avenuecrm.data.models.UserInformation
+import com.example.avenuecrm.data.encryption.CryptoManager
+import com.example.avenuecrm.data.models.Credentials
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
 
-class UserInformationSerializer @Inject constructor(
+class CredentialsCryptoSerializer @Inject constructor(
     private val cryptoManager: CryptoManager
-): Serializer<UserInformation> {
+): Serializer<Credentials> {
 
-    override val defaultValue: UserInformation
-        get() = UserInformation()
+    override val defaultValue: Credentials
+        get() = Credentials()
 
-    override suspend fun readFrom(input: InputStream): UserInformation {
+    override suspend fun readFrom(input: InputStream): Credentials {
         val decryptedBytes = cryptoManager.decrypt(input)
         return try {
             Json.decodeFromString(
-                deserializer = UserInformation.serializer(),
+                deserializer = Credentials.serializer(),
                 string = decryptedBytes.decodeToString()
             )
         } catch (e: SerializationException){
@@ -29,10 +29,10 @@ class UserInformationSerializer @Inject constructor(
         }
     }
 
-    override suspend fun writeTo(t: UserInformation, output: OutputStream) {
+    override suspend fun writeTo(t: Credentials, output: OutputStream) {
         cryptoManager.encrypt(
             bytes = Json.encodeToString(
-                serializer = UserInformation.serializer(),
+                serializer = Credentials.serializer(),
                 value = t
             ).encodeToByteArray(),
             outputStream = output

@@ -1,12 +1,12 @@
 package com.example.avenuecrm.data.preferences.abstraction
 
-import com.example.avenuecrm.data.models.UserInformation
+import com.example.avenuecrm.data.models.Credentials
 
 interface DataStoreRepository {
 
-    suspend fun putUserInformation(value: UserInformation)
+    suspend fun putCredentials(value: Credentials)
 
-    suspend fun getUserInformation(): UserInformation
+    suspend fun getCredentials(): Credentials
 
-    suspend fun clearUserInformation()
+    suspend fun clearCredentials()
 }

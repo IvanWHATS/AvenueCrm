@@ -5,15 +5,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.example.avenuecrm.R
 import com.example.avenuecrm.data.models.Module
 import com.example.avenuecrm.viewModels.MainMenuViewModel
 import com.google.android.material.navigation.NavigationView
+import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,24 +26,42 @@ class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private val viewModel: MainMenuViewModel by viewModels()
 
     private lateinit var navigationView: NavigationView
-    private lateinit var btn: Button
-
+    private lateinit var logoutBtn: Button
+    private lateinit var userImageView: ImageView
+    private lateinit var userNameTextView: TextView
+    private lateinit var userFioTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
 
         navigationView = findViewById(R.id.navView)
-        btn = findViewById(R.id.btn)
+        val navHeader = navigationView.getHeaderView(0)
+        logoutBtn = navHeader.findViewById(R.id.logout_btn)
+        userImageView = navHeader.findViewById(R.id.user_image)
+        userNameTextView = navHeader.findViewById(R.id.user_name)
+        userFioTextView = navHeader.findViewById(R.id.user_fio)
 
-        btn.setOnClickListener{
+
+        navigationView.setNavigationItemSelectedListener(this)
+
+        logoutBtn.setOnClickListener {
             viewModel.logOut()
             startActivity(Intent(this, AuthorizationActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             finish()
         }
 
-        navigationView.setNavigationItemSelectedListener(this)
+
+        lifecycleScope.launch(Dispatchers.Main){
+            viewModel.userInformation.collect{
+                it.file?.let { file -> Picasso.get().load(file.path).into(userImageView) }
+                userNameTextView.text = it.name
+                userFioTextView.text = it.fioFull
+            }
+        }
+
+        viewModel.loadUserInformation()
 
         lifecycleScope.launch(Dispatchers.Main) {
             viewModel.currentMenuItems.collect {
@@ -56,20 +75,13 @@ class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val module = viewModel.currentMenuItems.value.find { it.id == item.itemId }
         if (module != null) {
-            if (module.childs != null) {
+            if (module.subModules != null) {
                 viewModel.loadMenuItems(
-                    listOf(
-                        Module(
-                            name = module.name,
-                            link = module.link,
-                            id = module.id,
-                            childs = null
-                        )
-                    ).plus(module.childs)
+                    listOf(module.copy(subModules = null)).plus(module.subModules)
                 )
             }
         } else {
-            if (item.itemId == MENU_BACK){
+            if (item.itemId == MENU_BACK) {
                 viewModel.menuGoBack()
 
             }
@@ -86,7 +98,7 @@ class MainMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             navigationView.menu.addSubMenu(items.firstOrNull()?.name)
         }
         items.forEach { module ->
-            if (module.childs != null) {
+            if (module.subModules != null) {
                 menu.add(Menu.NONE, module.id!!, Menu.NONE, module.name)
                     .setActionView(R.layout.menu_arrow_icon)
                     .setIcon(R.drawable.outline_folder)
